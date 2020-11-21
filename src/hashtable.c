@@ -2,7 +2,20 @@
 #include <stdlib.h>
 
 hashtable_t* create_hashtable(unsigned size){
-	return NULL;
+	hashtable_t* ht = (hashtable_t*) malloc(sizeof(hashtable_t));
+	if(!ht) return NULL; // malloc error
+	if((ht->items = (hash_item_t**) malloc(size * sizeof(hash_item_t*))) == NULL){
+		free(ht->items);
+		return NULL;
+	}
+	
+	ht->size = size;
+	ht->cnt = 0;
+
+	for (unsigned i=0; i < size; i++)
+		ht->items[i] = NULL;
+
+	return ht;
 }
 
 void destroy_hashtable(hashtable_t* ht){

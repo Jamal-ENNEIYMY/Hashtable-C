@@ -8,7 +8,7 @@ typedef struct hash_elem_t {
 } hash_item_t;
 
 typedef struct {
-	hash_item_t* items;
+	hash_item_t** items;
 	unsigned int size;
 	unsigned int cnt;
 } hashtable_t;
