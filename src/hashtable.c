@@ -18,7 +18,21 @@ hashtable_t* create_hashtable(unsigned size){
 	return ht;
 }
 
+static void free_item(hash_item_t* it){
+	free(it->key);
+	free(it->value);
+	free(it);
+}
+
 void destroy_hashtable(hashtable_t* ht){
+	for(int i = 0; i < ht->size; i++){
+		hash_item_t* item = ht->items[i];
+		if (item != NULL)
+			free_item(item);
+	}
+
+	free(ht->items);
+	free(ht);
 }
 
 unsigned insert_item(hashtable_t* ht, char* k, void* v){
