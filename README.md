@@ -1,1 +1,2 @@
-# soring-unit
+# Hashtable-C
+An implementation of hashtable in C.
