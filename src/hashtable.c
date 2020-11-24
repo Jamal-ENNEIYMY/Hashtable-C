@@ -1,15 +1,6 @@
 #include <hashtable.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
-
-// djb
-static unsigned hash_fct(char* k){
-	unsigned hash = 5381;
-	while (*(k++))
-		hash = (hash * 33) + *(k);
-	return hash;
-}
 
 hashtable_t* create_hashtable(unsigned size){
 	hashtable_t* ht = (hashtable_t*) malloc(sizeof(hashtable_t));
@@ -30,7 +21,6 @@ hashtable_t* create_hashtable(unsigned size){
 
 static void free_item(hash_item_t* it){
 	free(it->key);
-	// munmap_chunk() when the type is changed  -> item->value should be always allocated
 	free(it->value);
 	free(it);
 }
@@ -38,61 +28,54 @@ static void free_item(hash_item_t* it){
 void destroy_hashtable(hashtable_t* ht){
 	for(int i = 0; i < ht->size; i++){
 		hash_item_t* item = ht->items[i];
-		while(item != NULL){
-			hash_item_t* e = item;
-			item = item->next;
-			free_item(e);
-		}
+		if (item != NULL)
+			free_item(item);
 	}
 
 	free(ht->items);
 	free(ht);
 }
 
-int insert_item(hashtable_t* ht, char* k, void* v){
-	if(v == NULL) {
-		printf("Null data cannot be inserted\n");
-		return -1;
+unsigned int hashFunction(char* key){
+	long int hashValue = 0;
+	unsigned int i = 0;
+	unsigned int keyLenght = strlen(key);
+	hashtable_t* ht;
+	for (i = 0; i < keyLenght ; i++)
+	{
+		hashValue = hashValue * 37 + key[i];
 	}
-	
-	unsigned h = hash_fct(k) % ht->size;
-
-	hash_item_t* e = ht->items[h];
-	
-	while(e != NULL) {
-		if( !strcmp(e->key, k)){
-			// replace existed value
-			e->value = v;
-		}
-		e = e->next;
-	}
-	
-	// if the key doesn't exist
-	if((e = (hash_item_t*) malloc(sizeof(hash_item_t) + strlen(k) + 1)) == NULL){
-		return -1;	
-	}
-	
-	e->key = (char*) malloc(sizeof(k));
-	strcpy(e->key, k);
-	e->value = (void*) malloc(sizeof(v)); 
-	e->value = v;
-	
-	e->next = ht->items[h];
-	ht->items[h] = e;
-	
-	ht->cnt++;
-	
-	return 0;
+	hashValue = hashValue % ht->size;
 }
+void insert_item(hashtable_t* ht, char* k, void* v){
 
+}
 void* search(hashtable_t* ht, char* k){
+	
+	/* here we need a hash function to find the hash value.
+	hash value is used to find to the location of 
+	key's item.*/
+
+	unsigned int slot = hashFunction(k);
+	hash_item_t* item = ht->items[slot];
+
+	if (item == NULL)
+	{
+		return;
+	}
+	while (item != NULL)
+	{
+		if(strcmp(item->key,k) == 0){
+			printf("",item->value);
+		}else
+		{
+			item = item -> next;
+		}
+		
+	}
 	return NULL;
 }
 
 void remove_item(hashtable_t* ht, char* k){
 
-}
-
-void show(hashtable_t* ht, char* k){
-	
 }
