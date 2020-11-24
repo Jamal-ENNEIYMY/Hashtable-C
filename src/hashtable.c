@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+// First try
 // djb
 static unsigned hash_fct(char* k){
 	unsigned hash = 5381;
