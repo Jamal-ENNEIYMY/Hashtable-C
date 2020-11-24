@@ -86,13 +86,35 @@ int insert_item(hashtable_t* ht, char* k, void* v){
 }
 
 void* search(hashtable_t* ht, char* k){
+
+	unsigned int slot = hash_fct(k);
+	hash_item_t* item = ht->items[slot];
+
+	if (item == NULL)
+	{
+		return;
+	}
+	while (item != NULL)
+	{
+		if(strcmp(item->key,k) == 0){
+			return item->value;
+		}else
+		{
+			item = item -> next;
+		}
+		
+	}
 	return NULL;
 }
-
+void show(hashtable_t* ht, char* k){
+	if (search(ht,k)!= NULL)
+	{
+		printf("",search(ht,k));
+	}else
+	{
+		printf("The value of this key is not available!");
+	}
+}
 void remove_item(hashtable_t* ht, char* k){
 
-}
-
-void show(hashtable_t* ht, char* k){
-	
 }
