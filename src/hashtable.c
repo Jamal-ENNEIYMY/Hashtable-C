@@ -1,5 +1,15 @@
 #include <hashtable.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+// djb
+static unsigned hash_fct(char* k){
+	unsigned hash = 5381;
+	while (*(k++))
+		hash = (hash * 33) + *(k);
+	return hash;
+}
 
 hashtable_t* create_hashtable(unsigned size){
 	hashtable_t* ht = (hashtable_t*) malloc(sizeof(hashtable_t));
@@ -20,6 +30,7 @@ hashtable_t* create_hashtable(unsigned size){
 
 static void free_item(hash_item_t* it){
 	free(it->key);
+	// munmap_chunk() when the type is changed  -> item->value should be always allocated
 	free(it->value);
 	free(it);
 }
@@ -27,15 +38,50 @@ static void free_item(hash_item_t* it){
 void destroy_hashtable(hashtable_t* ht){
 	for(int i = 0; i < ht->size; i++){
 		hash_item_t* item = ht->items[i];
-		if (item != NULL)
-			free_item(item);
+		while(item != NULL){
+			hash_item_t* e = item;
+			item = item->next;
+			free_item(e);
+		}
 	}
 
 	free(ht->items);
 	free(ht);
 }
 
-unsigned insert_item(hashtable_t* ht, char* k, void* v){
+int insert_item(hashtable_t* ht, char* k, void* v){
+	if(v == NULL) {
+		printf("Null data cannot be inserted\n");
+		return -1;
+	}
+	
+	unsigned h = hash_fct(k) % ht->size;
+
+	hash_item_t* e = ht->items[h];
+	
+	while(e != NULL) {
+		if( !strcmp(e->key, k)){
+			// replace existed value
+			e->value = v;
+		}
+		e = e->next;
+	}
+	
+	// if the key doesn't exist
+	if((e = (hash_item_t*) malloc(sizeof(hash_item_t) + strlen(k) + 1)) == NULL){
+		return -1;	
+	}
+	
+	e->key = (char*) malloc(sizeof(k));
+	strcpy(e->key, k);
+	e->value = (void*) malloc(sizeof(v)); 
+	e->value = v;
+	
+	e->next = ht->items[h];
+	ht->items[h] = e;
+	
+	ht->cnt++;
+	
 	return 0;
 }
 
@@ -48,6 +94,5 @@ void remove_item(hashtable_t* ht, char* k){
 }
 
 void show(hashtable_t* ht, char* k){
-
+	
 }
-
