@@ -29,6 +29,7 @@ first time running these almost all files with changes are showen red as they ar
 ```bash
 git add filename [filename...]
 ```
+btw make sure to add only important files!!!
 now we need to commit those changes:
 ```bash
 git commit -m "a kinda not important message"
