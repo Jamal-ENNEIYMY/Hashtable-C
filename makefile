@@ -27,8 +27,13 @@ obj/%.o: src/%.c
 .phony: test
 test:
 	@mkdir -p bin
-	@echo [*] Compiling the test ..
+	@echo [*] Compiling the test... 
 	@$(CC) ./test.c ./lib/$(LIB_TARGET) -o bin/$(TST_TARGET) $(CCFLAGS) -Iinclude -lm
+
+.phony: exo
+exo:
+	@echo ['__'] Running exo... 
+	@$(CC) ./exo.c -o ./bin/exo.o $(CCFLAGS) 
 
 .phony: clean
 clean:
