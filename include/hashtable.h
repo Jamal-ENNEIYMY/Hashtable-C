@@ -13,15 +13,17 @@ typedef struct {
 	unsigned int cnt;
 } hashtable_t;
 
-
 hashtable_t* create_hashtable(unsigned size);
 
 void destroy_hashtable(hashtable_t*);
 
-// return current cnt
+// returns -1 : error		0 : all good 		1 : already existing key
 int insert_item(hashtable_t*, char*, void*);
-void* search(hashtable_t*, char*);
-void remove_item(hashtable_t*, char*);
-void show(hashtable_t*, char*);
+void* find_item(hashtable_t*, char*);
+// 0 removed successfully   -1 : not found;
+int remove_item(hashtable_t*, char*);
+void show_item(hashtable_t*, char*);
+void show_all(hashtable_t*);
+int count_items_at (hashtable_t*, int);
 
 #endif

@@ -1,14 +1,7 @@
-#include <hashtable.h>
+#include "hashtable.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#define MAX_HASH  1027
-
-typedef struct HashItem {
-    char *key;
-    char *value;
-    struct HashItem *next;
-} HashItem;
 
 // djb
 static unsigned hash_fct(char* k){
@@ -38,7 +31,8 @@ hashtable_t* create_hashtable(unsigned size){
 static void free_item(hash_item_t* it){
 	free(it->key);
 	// munmap_chunk() when the type is changed  -> item->value should be always allocated
-	free(it->value);
+	// In our case we'll work with ints or basic types so it will raise the above error.
+	//free(it->value);
 	free(it);
 }
 
@@ -70,6 +64,7 @@ int insert_item(hashtable_t* ht, char* k, void* v){
 		if( !strcmp(e->key, k)){
 			// replace existed value
 			e->value = v;
+			return 1;
 		}
 		e = e->next;
 	}
@@ -92,11 +87,11 @@ int insert_item(hashtable_t* ht, char* k, void* v){
 	return 0;
 }
 
-void* search(hashtable_t* ht, char* k){
-
-	unsigned int slot = hash_fct(k);
+void* find_item(hashtable_t* ht, char* k){
+	// slot sould be in [0, ht->size]
+	unsigned int slot = hash_fct(k) % ht->size;
 	hash_item_t* item = ht->items[slot];
-
+	
 	while (item != NULL) {
 		if(strcmp(item->key,k) == 0)
 			return item->value;
@@ -105,26 +100,63 @@ void* search(hashtable_t* ht, char* k){
 	return NULL;
 }
 
-void show(hashtable_t* ht, char* k){
-	if (search(ht,k)!= NULL)
-		printf("",search(ht,k));
+void show_item(hashtable_t* ht, char* k){
+	void* v = find_item(ht,k);
+	if (v != NULL) {
+		printf("%d",*((int*) v));
+	}
 	else
 		printf("The value of this key is not available!");
 }
 
-void remove_item(HashItem* ht, char* k){
-	HashItem **link = &ht[hash_fct(k)];
+void show_all(hashtable_t* ht){
+	for(int i=0; i<ht->size; i++){
+		hash_item_t* e = ht->items[i];
+		char indent[50];
+		strcpy(indent, "");
+		while (e != NULL) {
+			if(strcmp(indent, "") == 0) printf("%2d ", i);
+			else                        printf("   ");
+			printf("%s%s : %d\n", indent, e->key, *((int*) e->value));
+			e = e->next;
+			strcat(indent, " ");
+		}
+	}
+}
 
-    while (*link) {
-        HashItem *tmp = *link;
-		printf("deleteItem %s%s : %d\n",tmp->key, *((int*) tmp->value));
-        if (strcmp(tmp->key, k) == 0) {
-            *link = tmp->next;  
-            freeItem(tmp);
-            break;
-        } else {
-            link = &(*link)->next;
-        }
-    }
+int remove_item(hashtable_t* ht, char* k){
+	// keep a reference to the previous item
+	// remove by setting prev -> next directly then freeing item.
+	unsigned int slot = hash_fct(k) % ht->size;
+	hash_item_t* item = ht->items[slot];
+	hash_item_t* prev;
+  while (item != NULL) {
+		if(strcmp(item->key, k) == 0) {
+			prev->next = item->next;
+			free_item(item);
+			return 0;
+		}
+		prev = item;
+		item = item -> next;
+	}
+	return -1;
+}
 
+int count_items_at (hashtable_t* ht, int idx) {
+	
+	if (idx < 0 || idx >= ht->size){
+		printf("Invalid Index\n");
+		return -1;
+	}
+	
+	hash_item_t* item = ht->items[idx];
+	
+	int c = 0;
+	
+	while (item != NULL) {
+		c++;
+		item = item -> next;
+	}
+	
+	return c;
 }
