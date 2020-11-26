@@ -2,6 +2,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#define MAX_HASH  1027
+
+typedef struct HashItem {
+    char *key;
+    char *value;
+    struct HashItem *next;
+} HashItem;
 
 // djb
 static unsigned hash_fct(char* k){
@@ -105,6 +112,19 @@ void show(hashtable_t* ht, char* k){
 		printf("The value of this key is not available!");
 }
 
-void remove_item(hashtable_t* ht, char* k){
+void remove_item(HashItem* ht, char* k){
+	HashItem **link = &ht[hash_fct(k)];
+
+    while (*link) {
+        HashItem *tmp = *link;
+		printf("deleteItem %s%s : %d\n",tmp->key, *((int*) tmp->value));
+        if (strcmp(tmp->key, k) == 0) {
+            *link = tmp->next;  
+            freeItem(tmp);
+            break;
+        } else {
+            link = &(*link)->next;
+        }
+    }
 
 }
