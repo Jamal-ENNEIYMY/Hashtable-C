@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-// First try
-// second
+
 // djb
 static unsigned hash_fct(char* k){
 	unsigned hash = 5381;
@@ -11,7 +10,23 @@ static unsigned hash_fct(char* k){
 		hash = (hash * 33) + *(k);
 	return hash;
 }
+void hash1::searchItem(string s){
 
+    //On retrouve l'index grace à la fonction de hashage
+    int index = HASH(s);
+
+    // Si la case est est vide 
+    if(HashTable[index]->nom.compare("vide") == 0)
+	cout << s << "n'existe pas" << endl;
+    else {
+ 	struct item* temp = HashTable[index];
+	while(p != NULL && (p->nom.compare( s ) != 0)) p = p->next;
+	if(p != NULL && (p->nom.compare( s ) == 0)) 
+		cout << s << "existe" << endl;
+	else
+		cout << s << "n'existe pas" << endl;
+   }
+}
 hashtable_t* create_hashtable(unsigned size){
 	hashtable_t* ht = (hashtable_t*) malloc(sizeof(hashtable_t));
 	if(!ht) return NULL; // malloc error
