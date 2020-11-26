@@ -10,11 +10,9 @@ typedef struct hash_item_t {
 typedef struct {
 	hash_item_t** items;
 	unsigned int size;
-	unsigned int cnt;
 } hashtable_t;
 
 hashtable_t* create_hashtable(unsigned size);
-
 void destroy_hashtable(hashtable_t*);
 
 // returns -1 : error		0 : all good 		1 : already existing key

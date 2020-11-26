@@ -15,9 +15,12 @@ int main(int argc, void** argv){
 		insert_item(ht, keys[i], &vals[i]);
 	}
 	
-	void* v = find_item(ht, "ELO");
-	printf("The value of 'ELO' is %d\n", *((int*) v));
-	
+	void* v = find_item(ht, "KIM");
+	if(v != NULL)
+		printf("The value of 'KIM' is %d\n", *((int*) v));
+	else
+		printf("Key not found\n");
+		
 	printf("Length of index %d is %d.\n", 1, count_items_at(ht, 1));
 	printf("Removing 'ELO': \n");
 	remove_item(ht, "ELO");

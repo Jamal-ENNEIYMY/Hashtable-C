@@ -20,7 +20,6 @@ hashtable_t* create_hashtable(unsigned size){
 	}
 	
 	ht->size = size;
-	ht->cnt = 0;
 
 	for (unsigned i=0; i < size; i++)
 		ht->items[i] = NULL;
@@ -55,7 +54,7 @@ int insert_item(hashtable_t* ht, char* k, void* v){
 		printf("Null data cannot be inserted\n");
 		return -1;
 	}
-	
+	// int [-2^31, 2^31-1]  unsigned  [0, 2^32 - 1] 
 	unsigned h = hash_fct(k) % ht->size;
 
 	hash_item_t* e = ht->items[h];
@@ -82,8 +81,6 @@ int insert_item(hashtable_t* ht, char* k, void* v){
 	e->next = ht->items[h];
 	ht->items[h] = e;
 	
-	ht->cnt++;
-	
 	return 0;
 }
 
@@ -93,7 +90,7 @@ void* find_item(hashtable_t* ht, char* k){
 	hash_item_t* item = ht->items[slot];
 	
 	while (item != NULL) {
-		if(strcmp(item->key,k) == 0)
+		if(strcmp(item->key, k) == 0)
 			return item->value;
 		item = item -> next;
 	}
@@ -101,7 +98,7 @@ void* find_item(hashtable_t* ht, char* k){
 }
 
 void show_item(hashtable_t* ht, char* k){
-	void* v = find_item(ht,k);
+	void* v = find_item(ht, k);
 	if (v != NULL) {
 		printf("%d",*((int*) v));
 	}
