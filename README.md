@@ -11,7 +11,7 @@ after
 ```bash
 $ ./bin/exo.a
 ```
-### Hashtable
+### Exo
 compile using
 ```bash
 $ make
