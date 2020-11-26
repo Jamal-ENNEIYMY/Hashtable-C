@@ -32,6 +32,7 @@ test:
 
 .phony: exo
 exo:
+	@mkdir -p bin
 	@echo ['__'] Running exo... 
 	@$(CC) ./exo.c -o ./bin/exo.o $(CCFLAGS) 
 
