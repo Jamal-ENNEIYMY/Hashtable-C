@@ -2,6 +2,16 @@
 An implementation of hashtable in C.
 
 ## How to use
+### Hashtable
+compile using
+```bash
+$ make exo
+```
+after
+```bash
+$ ./bin/exo.a
+```
+### Hashtable
 compile using
 ```bash
 $ make
@@ -12,6 +22,7 @@ eg.
 ```bash
 $ ./bin/hash_test
 ```
+
 
 ## How to edit
 clone the repository to your device by
